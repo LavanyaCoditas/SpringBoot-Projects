@@ -1,87 +1,89 @@
-#!/bin/bash
+Aspect-Oriented Programming (AOP) README
+This document provides an overview of Aspect-Oriented Programming (AOP), its core concepts, and a comparison between AspectJ and Spring AOP. It includes detailed explanations of advice usage, joinpoint signatures, pointcut expressions, and a mind map of advices using Mermaid.
+Table of Contents
+
+What is AOP?
+Aspect
+Advice and Its Types
+How to Use Advices
 
 
-# <span style="color: #2E86C1;">Aspect-Oriented Programming (AOP) README</span>
+Joinpoint
+Method Signature Using Joinpoint
+Method Parameter Using Joinpoint
 
- overview of Aspect-Oriented Programming (AOP), its core concepts, and a comparison between AspectJ and Spring AOP. It includes detailed explanations of advice usage, joinpoint signatures, pointcut expressions, and a mind map of advices using Mermaid.
 
-## <span style="color: #2874A6;">Table of Contents</span>
-* [What is AOP?](#what-is-aop)
-* [Aspect](#aspect)
-* [Advice and Its Types](#advice-and-its-types)
-    - [How to Use Advices](#how-to-use-advices)
-* [Joinpoint](#joinpoint)
-    - [Method Signature Using Joinpoint](#method-signature-using-joinpoint)
-    - [Method Parameter Using Joinpoint](#method-parameter-using-joinpoint)
-* [Pointcut](#pointcut)
-    - [How to Write Pointcut Expressions](#how-to-write-pointcut-expressions)
-    - [Match on Parameters Pointcut](#match-on-parameters-pointcut)
-    - [Pointcut Declaration](#pointcut-declaration)
-* [Target Object](#target-object)
-* [Weaving](#weaving)
-* [AspectJ vs. Spring AOP Differences](#aspectj-vs-spring-aop-differences)
-* [Advices Mind Map](#advices-mind-map)
-* [How to Order Advices](#how-to-order-advices)
+Pointcut
+How to Write Pointcut Expressions
+Match on Parameters Pointcut
+Pointcut Declaration
 
-## <span style="color: #2874A6;">1. What is AOP?</span>
-Aspect-Oriented Programming (AOP) is a programming paradigm that enhances modularity by separating **_cross-cutting concerns_** (e.g., logging, security, transaction management) from core business logic. These concerns span multiple modules and can clutter code if not isolated. AOP encapsulates them into modular units called **_aspects_**, improving code reusability, maintainability, and scalability.
 
-## <span style="color: #2874A6;">2. Aspect</span>
-An **_aspect_** is a modular unit in AOP that encapsulates a cross-cutting concern. It combines:
-* **_Advices_**: The logic to execute.
-* **_Pointcuts_**: The locations in the code where the logic applies.
+Target Object
+Weaving
+AspectJ vs. Spring AOP Differences
+Advices Mind Map
+How to Order Advices
+
+What is AOP?
+Aspect-Oriented Programming (AOP) is a programming paradigm that enhances modularity by separating cross-cutting concerns (e.g., logging, security, transaction management) from core business logic. These concerns span multiple modules and can clutter code if not isolated. AOP encapsulates them into modular units called aspects, improving code reusability, maintainability, and scalability.
+Aspect
+An aspect is a modular unit in AOP that encapsulates a cross-cutting concern. It combines:
+
+Advices: The logic to execute.
+Pointcuts: The locations in the code where the logic applies.
 
 For example, an aspect for logging defines when (pointcut) and how (advice) logging occurs across multiple classes.
+Advice and Its Types
+An advice is the code executed at specific points (joinpoints) to implement a cross-cutting concern. AOP defines five main advice types:
 
-## <span style="color: #2874A6;">3. Advice and Its Types</span>
-An **_advice_** is the code executed at specific points (**_joinpoints_**) to implement a cross-cutting concern. AOP defines five main advice types:
-* **_Before Advice_**: Executes before the joinpoint (e.g., before a method runs).
-* **_After Advice_**: Executes after the joinpoint, regardless of success or failure.
-* **_After Returning Advice_**: Executes only if the joinpoint completes successfully.
-* **_After Throwing Advice_**: Executes if the joinpoint throws an exception.
-* **_Around Advice_**: Wraps the joinpoint, allowing logic before and after, and control over joinpoint execution.
+Before Advice: Executes before the joinpoint (e.g., before a method runs).
+After Advice: Executes after the joinpoint, regardless of success or failure.
+After Returning Advice: Executes only if the joinpoint completes successfully.
+After Throwing Advice: Executes if the joinpoint throws an exception.
+Around Advice: Wraps the joinpoint, allowing logic before and after, and control over joinpoint execution.
 
-### <span style="color: #5499C7;">How to Use Advices</span>
+How to Use Advices
 Advices are defined in an aspect class using annotations (in Spring AOP) or AspectJ syntax. Below are examples in Spring AOP:
 
-- **_Before Advice_**:
-```java
+Before Advice:
+
 @Before("execution(* com.example.service.*.*(..))")
 public void logBefore() {
     System.out.println("Logging before method execution");
 }
-```
-$ **_Purpose_**: Executes before any method in the `com.example.service` package.
 
-- **_After Advice_**:
-```java
+  Purpose: Executes before any method in the com.example.service package.
+
+After Advice:
+
 @After("execution(* com.example.service.*.*(..))")
 public void logAfter() {
     System.out.println("Logging after method execution");
 }
-```
-$ **_Purpose_**: Runs after the method, regardless of the outcome.
 
-- **_After Returning Advice_**:
-```java
+  Purpose: Runs after the method, regardless of the outcome.
+
+After Returning Advice:
+
 @AfterReturning(pointcut = "execution(* com.example.service.*.*(..))", returning = "result")
 public void logAfterReturning(Object result) {
     System.out.println("Method returned: " + result);
 }
-```
-$ **_Purpose_**: Captures the return value of the method.
 
-- **_After Throwing Advice_**:
-```java
+  Purpose: Captures the return value of the method.
+
+After Throwing Advice:
+
 @AfterThrowing(pointcut = "execution(* com.example.service.*.*(..))", throwing = "exception")
 public void logException(Exception exception) {
     System.out.println("Exception thrown: " + exception.getMessage());
 }
-```
-$ **_Purpose_**: Executes when an exception is thrown.
 
-- **_Around Advice_**:
-```java
+  Purpose: Executes when an exception is thrown.
+
+Around Advice:
+
 @Around("execution(* com.example.service.*.*(..))")
 public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
     System.out.println("Before method: " + joinPoint.getSignature());
@@ -89,105 +91,123 @@ public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
     System.out.println("After method with result: " + result);
     return result;
 }
-```
-$ **_Purpose_**: Wraps the method, allowing pre- and post-processing, and control over method execution.
 
-## <span style="color: #2874A6;">4. Joinpoint</span>
-A **_joinpoint_** is a specific point in the program where an aspect’s advice can be applied, such as:
-* **_Method execution_**
-* **_Exception handling_**
-* **_Object instantiation_**
+  Purpose: Wraps the method, allowing pre- and post-processing, and control over method execution.
+Joinpoint
+A joinpoint is a specific point in the program where an aspect’s advice can be applied, such as:
+
+Method execution
+Exception handling
+Object instantiation
 
 In Spring AOP, joinpoints are typically method executions.
-
-### <span style="color: #5499C7;">Method Signature Using Joinpoint</span>
-The method signature can be accessed in an advice using the `JoinPoint` interface (or `ProceedingJoinPoint` for Around advice). Example:
-```java
+Method Signature Using Joinpoint
+The method signature can be accessed in an advice using the JoinPoint interface (or ProceedingJoinPoint for Around advice). Example:
 @Before("execution(* com.example.service.*.*(..))")
 public void logMethodSignature(JoinPoint joinPoint) {
     String methodName = joinPoint.getSignature().getName();
     System.out.println("Executing method: " + methodName);
 }
-```
-- **_Purpose_**: Retrieves the method name (e.g., `saveUser`) from the joinpoint.
 
-### <span style="color: #5499C7;">Method Parameter Using Joinpoint</span>
-Method parameters can be accessed via the `JoinPoint` interface:
-```java
+Purpose: Retrieves the method name (e.g., saveUser) from the joinpoint.
+Method Parameter Using Joinpoint
+Method parameters can be accessed via the JoinPoint interface:
 @Before("execution(* com.example.service.*.*(..))")
 public void logMethodParameters(JoinPoint joinPoint) {
     Object[] args = joinPoint.getArgs();
     System.out.println("Method arguments: " + Arrays.toString(args));
 }
-```
-- **_Purpose_**: Logs all arguments passed to the method.
 
-## <span style="color: #2874A6;">5. Pointcut</span>
-A **_pointcut_** is an expression that selects a set of joinpoints where an advice should be applied. It acts as a filter to target specific methods or points in the code.
-
-### <span style="color: #5499C7;">How to Write Pointcut Expressions</span>
+Purpose: Logs all arguments passed to the method.
+Pointcut
+A pointcut is an expression that selects a set of joinpoints where an advice should be applied. It acts as a filter to target specific methods or points in the code.
+How to Write Pointcut Expressions
 Pointcut expressions use AspectJ syntax, even in Spring AOP. The general format is:
-```
 execution(modifiers-pattern? return-type-pattern declaring-type-pattern? method-name-pattern(param-pattern))
-```
-Example:
-```java
-execution(public * com.example.service.*.*(String, ..))
-```
-- **_Modifiers_**: `public` (matches public methods).
-- **_Return type_**: `*` (any return type).
-- **_Declaring type_**: `com.example.service.*` (any class in the package).
-- **_Method name_**: `.*` (any method name).
-- **_Parameters_**: `(String, ..)` (methods with a String as the first parameter and any other parameters).
 
-### <span style="color: #5499C7;">Match on Parameters Pointcut</span>
+Example:
+execution(public * com.example.service.*.*(String, ..))
+
+
+Modifiers: public (matches public methods).
+Return type: * (any return type).
+Declaring type: com.example.service.* (any class in the package).
+Method name: .* (any method name).
+Parameters: (String, ..) (methods with a String as the first parameter and any other parameters).
+
+Match on Parameters Pointcut
 To match methods based on specific parameter types:
-```java
 @Pointcut("execution(* com.example.service.*.*(String, int))")
 public void stringAndIntMethods() {}
-```
-- **_Purpose_**: Matches methods with exactly two parameters: a `String` and an `int`.
 
-### <span style="color: #5499C7;">Pointcut Declaration</span>
-Pointcuts are declared using the `@Pointcut` annotation in Spring AOP or AspectJ syntax. Example:
-```java
+Purpose: Matches methods with exactly two parameters: a String and an int.
+Pointcut Declaration
+Pointcuts are declared using the @Pointcut annotation in Spring AOP or AspectJ syntax. Example:
 @Pointcut("execution(* com.example.service.*.*(..))")
 public void serviceMethods() {}
-```
+
 This pointcut can be reused in multiple advices:
-```java
 @Before("serviceMethods()")
 public void logBefore() {
     System.out.println("Logging before service methods");
 }
-```
-- **_Purpose_**: Defines reusable pointcuts to simplify advice application.
 
-## <span style="color: #2874A6;">6. Target Object</span>
-The **_target object_** is the object whose methods are intercepted by an aspect’s advice. In Spring AOP:
-* **_Typical use_**: A Spring bean.
-* **_Mechanism_**: A proxy is created around the target object to apply the aspect logic.
+Purpose: Defines reusable pointcuts to simplify advice application.
+Target Object
+The target object is the object whose methods are intercepted by an aspect’s advice. In Spring AOP:
 
-## <span style="color: #2874A6;">7. Weaving</span>
-**_Weaving_** is the process of integrating aspects with the application code by linking advices to joinpoints. It can occur at:
-* **_Compile-time_**: Aspects are woven into bytecode during compilation (AspectJ).
-* **_Load-time_**: Aspects are woven when classes are loaded into the JVM.
-* **_Runtime_**: Aspects are applied dynamically using proxies (Spring AOP).
+Typical use: A Spring bean.
+Mechanism: A proxy is created around the target object to apply the aspect logic.
 
-## <span style="color: #2874A6;">8. AspectJ vs. Spring AOP Differences</span>
-| **_Feature_**          | **_AspectJ_**                              | **_Spring AOP_**                          |
-|-----------------------|-------------------------------------------|------------------------------------------|
-| **_Scope_**           | Supports all joinpoints (e.g., method execution, field access). | Limited to method-level joinpoints for Spring beans. |
-| **_Weaving_**         | Compile-time, load-time, or runtime weaving. | Runtime weaving via proxies (JDK or CGLIB). |
-| **_Performance_**     | Faster due to compile-time/load-time weaving. | Slower due to runtime proxy overhead. |
-| **_Ease of Use_**     | More complex, requires AspectJ tools.       | Simpler, integrated with Spring.         |
-| **_Pointcut Language_** | Full AspectJ expressions.                 | Subset of AspectJ expressions.           |
-| **_Dependency_**      | Requires AspectJ libraries.                | Built into Spring framework.             |
+Weaving
+Weaving is the process of integrating aspects with the application code by linking advices to joinpoints. It can occur at:
 
-## <span style="color: #2874A6;">9. Advices Mind Map</span>
+Compile-time: Aspects are woven into bytecode during compilation (AspectJ).
+Load-time: Aspects are woven when classes are loaded into the JVM.
+Runtime: Aspects are applied dynamically using proxies (Spring AOP).
+
+AspectJ vs. Spring AOP Differences
+
+
+
+Feature
+AspectJ
+Spring AOP
+
+
+
+Scope
+Supports all joinpoints (e.g., method execution, field access).
+Limited to method-level joinpoints for Spring beans.
+
+
+Weaving
+Compile-time, load-time, or runtime weaving.
+Runtime weaving via proxies (JDK or CGLIB).
+
+
+Performance
+Faster due to compile-time/load-time weaving.
+Slower due to runtime proxy overhead.
+
+
+Ease of Use
+More complex, requires AspectJ tools.
+Simpler, integrated with Spring.
+
+
+Pointcut Language
+Full AspectJ expressions.
+Subset of AspectJ expressions.
+
+
+Dependency
+Requires AspectJ libraries.
+Built into Spring framework.
+
+
+Advices Mind Map
 Below is a Mermaid diagram illustrating the types of advices in AOP:
-
-```mermaid
 graph TD
     A[AOP Advice] --> B[Before]
     A --> C[After]
@@ -198,16 +218,15 @@ graph TD
     E -->|Executes| H[After Successful Joinpoint]
     F -->|Executes| I[If Joinpoint Throws Exception]
     D -->|Wraps| J[Before and After Joinpoint]
-```
 
-## <span style="color: #2874A6;">10. How to Order Advices</span>
+How to Order Advices
 When multiple advices apply to the same joinpoint, their execution order must be defined to avoid conflicts. In Spring AOP:
-* **_Use `@Order` annotation_**: Apply to the aspect class or implement the `Ordered` interface.
-* **_Priority_**: Lower order values indicate higher priority (e.g., `@Order(1)` executes before `@Order(2)`).
-* **_Around advice_**: Order determines the nesting of execution.
+
+Use @Order annotation: Apply to the aspect class or implement the Ordered interface.
+Priority: Lower order values indicate higher priority (e.g., @Order(1) executes before @Order(2)).
+Around advice: Order determines the nesting of execution.
 
 Example:
-```java
 @Aspect
 @Order(1)
 @Component
@@ -227,8 +246,5 @@ public class SecurityAspect {
         System.out.println("Checking security");
     }
 }
-```
-- **_Outcome_**: `LoggingAspect` executes before `SecurityAspect` due to its lower order value.
 
-EOF
-
+Outcome: LoggingAspect executes before SecurityAspect due to its lower order value.
