@@ -1,0 +1,25 @@
+ drop table if exists book
+
+  drop table if exists library
+
+create table book (
+        id bigint not null auto_increment,
+        library_id bigint,
+        author varchar(255),
+        isbn varchar(255),
+        title varchar(255),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate:
+    create table library (
+        id bigint not null auto_increment,
+        location varchar(255),
+        name varchar(255),
+        primary key (id)
+    ) engine=InnoDB
+
+
+    alter table book
+           add constraint FKaojxagnfmppd09k35kye5eph5
+           foreign key (library_id)
+           references library (id)
