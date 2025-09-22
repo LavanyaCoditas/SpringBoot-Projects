@@ -1,0 +1,39 @@
+
+#points to the master changelog file where all the changes to the database are tracked.
+databaseChangeLog:
+  - changeSet:
+      id: 01-create-employee-table
+      author: lavanya
+      comment: Create employee table
+      changes:
+        - sqlFile:
+            path: sql/01-sql-query1-create-table.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+            dbms: mysql
+
+  - changeSet:
+      id: 02-insert-new-employees
+      author: lavanya
+      comment: Insert initial employee data
+      changes:
+        - sqlFile:
+            path: sql/02-insert-new-employee.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+            dbms: mysql
+
+  - changeSet:
+        id: 02-insert-new-employees-2
+        author: lavanya
+        comment: Insert new employee data
+        changes:
+            - sqlFile:
+                  path: sql/03-insert-new-employee-2.sql
+                  relativeToChangelogFile: true
+                  splitStatements: true
+                  stripComments: true
+                  dbms: mysql
+

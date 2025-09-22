@@ -1,0 +1,5 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+cruddemo,com.luv2code.springboot.cruddemo,CruddemoApplication,5,3,0,0,2,1,1,1,1,1
+cruddemo,com.luv2code.springboot.cruddemo.service,EmployeeServiceImpl,0,38,0,0,0,10,0,6,0,6
+cruddemo,com.luv2code.springboot.cruddemo.entity,Employee,0,53,0,0,0,20,0,11,0,11
+cruddemo,com.luv2code.springboot.cruddemo.rest,EmployeeRestController,15,44,2,2,4,13,2,6,1,5

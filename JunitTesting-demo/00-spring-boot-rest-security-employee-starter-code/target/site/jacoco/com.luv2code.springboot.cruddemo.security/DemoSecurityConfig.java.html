@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DemoSecurityConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">cruddemo</a> &gt; <a href="index.source.html" class="el_package">com.luv2code.springboot.cruddemo.security</a> &gt; <span class="el_source">DemoSecurityConfig.java</span></div><h1>DemoSecurityConfig.java</h1><pre class="source lang-java linenums">    package com.luv2code.springboot.cruddemo.security;
+
+    import org.springframework.beans.factory.annotation.Configurable;
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.http.HttpMethod;
+    import org.springframework.security.config.Customizer;
+    import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+    import org.springframework.security.core.userdetails.User;
+    import org.springframework.security.core.userdetails.UserDetails;
+    import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+    import org.springframework.security.crypto.password.PasswordEncoder;
+    import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+    import org.springframework.security.provisioning.JdbcUserDetailsManager;
+    import org.springframework.security.provisioning.UserDetailsManager;
+    import org.springframework.security.web.SecurityFilterChain;
+    import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
+    import javax.sql.DataSource;
+
+    @Configuration
+<span class="fc" id="L22">    public class DemoSecurityConfig {</span>
+
+    //    @Bean
+    //    public InMemoryUserDetailsManager userDetailsManager() {
+    //        UserDetails john = User.builder()
+    //                .username(&quot;john&quot;)
+    //                .password(&quot;{noop}test123&quot;)
+    //                .roles(&quot;EMPLOYEE&quot;)
+    //                .build();
+    //
+    //        UserDetails mary = User.builder()
+    //                .username(&quot;mary&quot;)
+    //                .password(&quot;{noop}test123&quot;)
+    //                .roles(&quot;EMPLOYEE&quot;, &quot;MANAGER&quot;)
+    //                .build();
+    //
+    //        UserDetails susan = User.builder()
+    //                .username(&quot;susan&quot;)
+    //                .password(&quot;{noop}test123&quot;)
+    //                .roles(&quot;EMPLOYEE&quot;, &quot;MANAGER&quot;, &quot;ADMIN&quot;)
+    //                .build();
+    //
+    //        return new InMemoryUserDetailsManager(john, mary, susan);
+    //    }
+
+
+
+        //add support for JDBC... no more hardcoded users
+
+        @Bean
+        public UserDetailsManager userDetailsManager(DataSource dataSource){
+<span class="fc" id="L53">            return new JdbcUserDetailsManager(dataSource);</span>
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+    //       return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+<span class="fc" id="L59">            return PasswordEncoderFactories.createDelegatingPasswordEncoder();</span>
+        }
+
+
+
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+<span class="fc" id="L66">            http</span>
+    //                .csrf(csrf -&gt; csrf
+    //                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+    //                )
+<span class="fc" id="L70">                    .authorizeHttpRequests(configurer -&gt;</span>
+                    configurer
+<span class="fc" id="L72">                            .requestMatchers(HttpMethod.GET, &quot;/api/employees&quot;).hasRole(&quot;EMPLOYEE&quot;)</span>
+<span class="fc" id="L73">                            .requestMatchers(HttpMethod.GET, &quot;/api/employees/**&quot;).hasRole(&quot;EMPLOYEE&quot;)</span>
+<span class="fc" id="L74">                            .requestMatchers(HttpMethod.POST, &quot;/api/employees&quot;).hasRole(&quot;MANAGER&quot;)</span>
+<span class="fc" id="L75">                            .requestMatchers(HttpMethod.PUT, &quot;/api/employees&quot;).hasRole(&quot;MANAGER&quot;)</span>
+<span class="fc" id="L76">                            .requestMatchers(HttpMethod.DELETE, &quot;/api/employees/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="fc" id="L77">                            .requestMatchers(HttpMethod.GET, &quot;/api/csrf-token&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="fc" id="L78">                            .anyRequest().authenticated()</span>
+
+
+            );
+
+            //use HTTP Basic authentication
+<span class="fc" id="L84">            http.httpBasic(Customizer.withDefaults());</span>
+
+            //disable Cross Site Request Forgery(CSRF)
+            //in general,not required for stateless REST APIs that use POST,PUT,DELETE and/or  PATCH
+<span class="fc" id="L88">            http.csrf(csrf -&gt; csrf.disable());</span>
+<span class="fc" id="L89">            return http.build();</span>
+        }
+    }
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
